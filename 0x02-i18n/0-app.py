@@ -8,7 +8,7 @@ from flask import Flask, render_template
 app = Flask(__name__)
 
 
-@app.route('/', strict_slashes =flase)
+@app.route('/', strict_slashes =False)
 def index() -> str:
     """
     Route for the index page.
