@@ -8,8 +8,6 @@ const client = createClient();
 // Event listener for successful connection to the Redis server
 client.on('connect', function() {
   console.log('Redis client connected to the server');
-  // Execute Redis commands after successful connection
-  executeRedisCommands();
 });
 
 // Event listener for connection errors
@@ -30,8 +28,7 @@ function setNewSchool(schoolName, value) {
 const get = promisify(client.get).bind(client);
 
 /**
- * Asynchronous function getting and displaying value associated
- * with a given key from the Redis store
+ * Asynchronous function to get and display the value associated with a given key from the Redis store
  * @param {string} schoolName - The key to retrieve from the Redis store
  */
 async function displaySchoolValue(schoolName) {
@@ -45,3 +42,17 @@ async function displaySchoolValue(schoolName) {
     console.log(`Error getting value for ${schoolName}: ${error}`);
     throw error;
   }
+}
+
+// Execute Redis commands in sequence
+async function executeRedisCommands() {
+  // Display value for 'Holberton' before setting a new value
+  await displaySchoolValue('Holberton');
+  // Set new value for 'HolbertonSanFrancisco'
+  setNewSchool('HolbertonSanFrancisco', '100');
+  // Display value for 'HolbertonSanFrancisco' after setting the new value
+  await displaySchoolValue('HolbertonSanFrancisco');
+}
+
+// Ensure commands are run only after a successful connection
+client.on('connect', executeRedisCommands);
